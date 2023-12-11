@@ -63,11 +63,15 @@ if [ "$DATA" != "OK_FILE_NUM" ]; then
 	echo "ERROR 3a: WRONG FILE_NUM"
 	exit 3
 fi
+echo "(10a) Loop File"
+for N in `seq $NUM_FILES`
+do
+	echo "Archivo numero $N"
 
 echo "(10b) Send File"
 
-FILE_NAME="fary1.txt"
-FILE_MD5=`echo fary1.txt | md5sum | cut -d " " -f 1`
+FILE_NAME="fary$N.txt"
+FILE_MD5=`echo $FILE_NAME | md5sum | cut -d " " -f 1`
 
 echo "File&MD5 sended"
 sleep 1
@@ -123,4 +127,5 @@ if [ "$DATA" != "OK_FILE_MD5"  ]; then
 fi
 
 echo "FIN"
+done
 exit 0

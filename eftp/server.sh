@@ -70,9 +70,12 @@ fi
 echo "OK_FILE_NUM" | nc $CLIENT $PORT
 FILE_NUM=`echo $DATA | cut -d " " -f 2`
 
+echo "(8a) Loop NUM"
+
 for N in `seq $FILE_NUM`
 do
 	echo "Archivo numero $N"
+
 echo "(8b) Listen"
 
 DATA=`nc -l -p $PORT -w $TIMEOUT`
