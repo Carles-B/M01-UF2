@@ -1,8 +1,5 @@
 #!/bin/bash
 
-echo $#
-echo $0
-echo $1
 if [ $# -lt 1  ];then
 	SERVER="localhost"
 else 
@@ -53,7 +50,21 @@ fi
 echo "OK_HANDSHAKE GOOD"
 sleep 1
 
-echo "(10) Send File"
+echo "(9a) SEND NUM_FILES"
+
+NUM_FILES=`ls imgs/ | wc -l`
+sleep 1
+echo "NUM_FILES $NUM_FILES" | nc $SERVER $PORT
+
+echo "(9b) LISTEN OK/KO_NUM_FILES"
+
+DATA=`nc -l -p $PORT -w $TIMEOUT`
+if [ "$DATA" != "OK_FILE_NUM" ]; then
+	echo "ERROR 3a: WRONG FILE_NUM"
+	exit 3
+fi
+
+echo "(10b) Send File"
 
 FILE_NAME="fary1.txt"
 FILE_MD5=`echo fary1.txt | md5sum | cut -d " " -f 1`
@@ -77,6 +88,9 @@ then
 	exit 3
 fi
 
+sleep 1
+cat imgs/$FILE_NAME | nc $SERVER $PORT
+
 echo "(15)Listen"
 
 DATA=`nc -l -p $PORT -w $TIMEOUT`
@@ -88,6 +102,7 @@ then
 	echo "ERROR 5: BAD_DATA"
 	sleep 1
 	echo "KO_DATA"
+	exit 5
 fi
 
 echo "(18) Send"
@@ -95,7 +110,6 @@ echo "(18) Send"
 FILE_MD5=`cat imgs/$FILE_NAME| md5sum | cut -d " " -f 1`
 sleep 1
 echo "FILE_MD5 $FILE_MD5" | nc $SERVER $PORT
-sleep 1
 
 echo "(19) Listen"
 DATA=`nc -l -p $PORT -w $TIMEOUT`
