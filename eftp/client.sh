@@ -1,9 +1,16 @@
 #!/bin/bash
 
-if [ $# -lt 1  ];then
+if [ $# -lt 1  ]; then
 	SERVER="localhost"
-else 
+elif [ $# -ge 1  ]; then 
 	SERVER="$1"
+fi
+
+if [ $# -eq 2  ]; then
+	echo "(-1) Reset"
+	echo "RESET" | nc $SERVER $PORT
+
+	sleep 2
 fi
 
 echo "Cliente de EFTP"
@@ -64,13 +71,13 @@ if [ "$DATA" != "OK_FILE_NUM" ]; then
 	exit 3
 fi
 echo "(10a) Loop File"
-for N in `seq $NUM_FILES`
+for FILELOOP in `ls imgs/`
 do
-	echo "Archivo numero $N"
+	echo "Archivo $FILELOOP"
 
 echo "(10b) Send File"
 
-FILE_NAME="fary$N.txt"
+FILE_NAME="$FILELOOP"
 FILE_MD5=`echo $FILE_NAME | md5sum | cut -d " " -f 1`
 
 echo "File&MD5 sended"
